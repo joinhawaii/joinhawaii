@@ -215,7 +215,7 @@ export default function CalendarClientContainer() {
   return (
     <div>
       <Heading as='h2' mb='4' size='7'>
-        일정확인
+        일정확인1
       </Heading>
       <div className={styles.root}>
         <div className={styles.legend}>
