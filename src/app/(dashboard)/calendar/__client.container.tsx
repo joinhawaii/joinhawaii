@@ -96,7 +96,7 @@ function buildClientLabel(res: ReservationResponse): string {
   if (validClients.length > 2) {
     return `${res.main_client_name} 외 ${validClients.length - 1}명`;
   }
-  return validClients.join(', ');
+  return validClients.map(client => client.korean_name).join(', ');
 }
 
 function toCalendarEvents(reservations: ReservationResponse[]): CalendarEvent[] {
