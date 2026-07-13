@@ -111,7 +111,9 @@ export default function ReservationsFormClientContainer({
 
   const mutation = useMutation({
     mutationFn: (formData: ReservationFormData) => {
-      return isModify ? updateReservation(formData) : createReservation(formData);
+      return isModify
+        ? updateReservation({ ...formData, reservation_id: data?.reservation_id })
+        : createReservation(formData);
     },
     onSuccess: (result: { data: ReservationResponse }) => {
       handleApiSuccess(result);
