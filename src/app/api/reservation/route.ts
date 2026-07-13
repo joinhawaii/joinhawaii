@@ -552,3 +552,49 @@ export async function PATCH(request: Request) {
     );
   }
 }
+
+export async function DELETE(request: Request) {
+  try {
+    const { reservation_id } = (await request.json()) as { reservation_id: string };
+
+    if (!reservation_id) {
+      throw new Error('예약번호는 필수입니다.');
+    }
+
+    const supabase = await createClient();
+
+    const productTables = ['flights', 'hotels', 'tours', 'rental_cars', 'insurances'] as const;
+
+    const deletions = await Promise.all([
+      ...productTables.map(table =>
+        supabase.from(table).delete().eq('reservation_id', reservation_id)
+      ),
+      supabase.from('clients').delete().eq('reservation_id', reservation_id)
+    ]);
+
+    const deletionError = deletions.map(result => result.error).find(Boolean);
+    if (deletionError) throw deletionError;
+
+    const { error, count } = await supabase
+      .from('reservations')
+      .delete({ count: 'exact' })
+      .eq('reservation_id', reservation_id);
+
+    if (error) throw error;
+    if (!count) throw new Error('예약 정보를 찾을 수 없습니다.');
+
+    return NextResponse.json({
+      message: `[${reservation_id}] 예약이 삭제되었습니다`,
+      success: true
+    });
+  } catch (error) {
+    console.error('예약 삭제 에러:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: isPostgrestError(error) ? error.message : '예약 삭제 중 오류가 발생했습니다.'
+      },
+      { status: 500 }
+    );
+  }
+}

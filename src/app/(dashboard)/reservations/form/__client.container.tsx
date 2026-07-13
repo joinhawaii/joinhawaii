@@ -1,7 +1,7 @@
 'use client';
 
-import { PAYMENT_STATUS_COLOR, PaymentStatus, PRODUCT_OPTIONS } from '@/constants';
-import { createReservation, updateReservation } from '@/http';
+import { PAYMENT_STATUS_COLOR, PaymentStatus, PRODUCT_OPTIONS, QUERY_KEYS } from '@/constants';
+import { createReservation, deleteReservation, updateReservation } from '@/http';
 import { reservationQueryOptions } from '@/lib/queries';
 import type {
   AdditionalOptions,
@@ -11,10 +11,20 @@ import type {
 } from '@/types';
 import { handleApiError, handleApiSuccess, toReadableAmount } from '@/utils';
 import { observable } from '@legendapp/state';
-import { Badge, Button, Flex, Heading, Table, Text, TextField } from '@radix-ui/themes';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  AlertDialog,
+  Badge,
+  Button,
+  Flex,
+  Heading,
+  Table,
+  Text,
+  TextField
+} from '@radix-ui/themes';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileText } from 'lucide-react';
-import { useEffect } from 'react';
+import { useRouter } from 'nextjs-toploader/app';
+import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import AdditionalOptionsEditor from './AdditionalOptionsEditor';
@@ -42,6 +52,10 @@ export default function ReservationsFormClientContainer({
 }: {
   reservation_id: string;
 }) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   const { data, refetch } = useQuery({
     ...reservationQueryOptions(reservation_id!),
     enabled: !!reservation_id
@@ -106,6 +120,16 @@ export default function ReservationsFormClientContainer({
     onError: handleApiError
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteReservation(data!.reservation_id!),
+    onSuccess: result => {
+      handleApiSuccess(result);
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.products.all });
+      router.push('/reservations');
+    },
+    onError: handleApiError
+  });
+
   const onSubmit: SubmitHandler<ReservationFormData> = formData => {
     if (!isDirty) return toast.info('변경된 내용이 없습니다.');
     mutation.mutate(formData, {
@@ -153,10 +177,38 @@ export default function ReservationsFormClientContainer({
         <Heading as='h2' size='7'>
           예약관리
         </Heading>
-        <Button size='3' color='red'>
-          예약 삭제
-        </Button>
+        {isModify && (
+          <Button size='3' color='red' type='button' onClick={() => setIsDeleteDialogOpen(true)}>
+            예약 삭제
+          </Button>
+        )}
       </Flex>
+
+      <AlertDialog.Root open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialog.Content maxWidth='450px'>
+          <AlertDialog.Title>예약 삭제 확인</AlertDialog.Title>
+          <AlertDialog.Description size='2'>
+            <strong>[{data?.reservation_id}]</strong> 예약을 삭제하시겠습니까? 등록된 고객,
+            항공/호텔/투어/렌터카/보험 정보가 모두 함께 삭제되며 복구할 수 없습니다.
+          </AlertDialog.Description>
+          <Flex gap='1' mt='4' justify='end'>
+            <AlertDialog.Cancel>
+              <Button variant='soft' color='gray'>
+                취소
+              </Button>
+            </AlertDialog.Cancel>
+            <AlertDialog.Action>
+              <Button
+                color='red'
+                loading={deleteMutation.isPending}
+                onClick={() => deleteMutation.mutate()}
+              >
+                삭제
+              </Button>
+            </AlertDialog.Action>
+          </Flex>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
 
       <Flex direction='column' gap='5'>
         <ClientForm data={data} mutation={mutation} />
