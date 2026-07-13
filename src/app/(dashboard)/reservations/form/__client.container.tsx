@@ -190,8 +190,9 @@ export default function ReservationsFormClientContainer({
         <AlertDialog.Content maxWidth='450px'>
           <AlertDialog.Title>예약 삭제 확인</AlertDialog.Title>
           <AlertDialog.Description size='2'>
-            <strong>[{data?.reservation_id}]</strong> 예약을 삭제하시겠습니까? 등록된 고객,
-            항공/호텔/투어/렌터카/보험 정보가 모두 함께 삭제되며 복구할 수 없습니다.
+            <strong>{data?.main_client_name}</strong>님 예약[{data?.reservation_id}]을
+            삭제하시겠습니까? 등록된 고객, 항공/호텔/투어/렌터카/보험 정보가 모두 함께 삭제되며
+            복구할 수 없습니다.
           </AlertDialog.Description>
           <Flex gap='1' mt='4' justify='end'>
             <AlertDialog.Cancel>
@@ -396,7 +397,7 @@ export default function ReservationsFormClientContainer({
                     <Table.Row>
                       <Table.Cell colSpan={3}>
                         <Flex justify='end' gap='2'>
-                          <Button disabled={mutation.isPending} size='3'>
+                          <Button loading={mutation.isPending} size='3'>
                             저장
                           </Button>
                           <Button
