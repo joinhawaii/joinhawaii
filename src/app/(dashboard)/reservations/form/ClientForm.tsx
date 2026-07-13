@@ -174,7 +174,7 @@ export default function ClientForm({
     });
   };
 
-  const isRemoveClientDisabled = clients.length <= (data?.clients.length || 1);
+  const isRemoveClientDisabled = clients.length <= (data?.clients?.length || 1);
   const hasProgressContent = Boolean(content?.trim());
 
   const redirectModifyForm = async (reservationId: string) => {
