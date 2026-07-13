@@ -149,9 +149,14 @@ export default function ReservationsFormClientContainer({
 
   return (
     <div className={styles.root}>
-      <Heading as='h2' mb='4' size='7'>
-        예약관리
-      </Heading>
+      <Flex mb='4' align='center' justify='between'>
+        <Heading as='h2' size='7'>
+          예약관리
+        </Heading>
+        <Button size='3' color='red'>
+          예약 삭제
+        </Button>
+      </Flex>
 
       <Flex direction='column' gap='5'>
         <ClientForm data={data} mutation={mutation} />
