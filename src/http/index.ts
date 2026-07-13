@@ -190,6 +190,25 @@ export const deleteProduct = async (params: {
 
   return result;
 };
+
+export const deleteReservation = async (reservation_id: string) => {
+  const response = await fetch('/api/reservation', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ reservation_id })
+  });
+
+  const result = await response.json();
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.error || '예약 삭제에 실패했습니다.');
+  }
+
+  return result;
+};
+
 export async function updateAdditionalOptions(data: AdditionalOptions[]) {
   const payload = data.map(({ total_amount_krw, total_cost_krw, ...rest }) => rest);
 
