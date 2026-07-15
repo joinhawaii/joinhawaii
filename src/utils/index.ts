@@ -381,12 +381,9 @@ export function formatTimeForPrint(raw: string | null | undefined) {
   const timeLabel = extractTimeLabel(raw);
   if (!timeLabel) return '-';
 
-  const [hours, minutes] = timeLabel.split(':');
-  const hour = Number(hours);
-  const meridiem = hour >= 12 ? 'PM' : 'AM';
-  const hour12 = hour % 12 || 12;
+  if (timeLabel === '00:00') return '';
 
-  return `${String(hour12).padStart(2, '0')}:${minutes} ${meridiem}`;
+  return timeLabel;
 }
 
 export function toParagraphHtml(text: string) {
