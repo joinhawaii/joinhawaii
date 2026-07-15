@@ -393,7 +393,7 @@ function VoucherCarForm({ reservationId, selectedProduct, clients }: VoucherCarF
                 {[
                   selectedProduct.pickup_location,
                   selectedProduct.pickup_date
-                    ? toReadableDate(selectedProduct.pickup_date, true)
+                    ? toReadableDate(selectedProduct.pickup_date, true, false)
                     : ''
                 ]
                   .filter(Boolean)
@@ -406,7 +406,7 @@ function VoucherCarForm({ reservationId, selectedProduct, clients }: VoucherCarF
                 {[
                   selectedProduct.return_location,
                   selectedProduct.return_date
-                    ? toReadableDate(selectedProduct.return_date, true)
+                    ? toReadableDate(selectedProduct.return_date, true, false)
                     : ''
                 ]
                   .filter(Boolean)

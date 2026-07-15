@@ -99,11 +99,11 @@ function renderTourDateTimeContent(
   const { start_date, end_date } = selectedProduct;
 
   if (start_date && end_date) {
-    return `${toReadableDate(start_date, true)} ~ ${toReadableDate(end_date, true)}`;
+    return `${toReadableDate(start_date, true, false)} ~ ${toReadableDate(end_date, true, false)}`;
   }
 
   if (start_date) {
-    return toReadableDate(start_date, true);
+    return toReadableDate(start_date, true, false);
   }
 
   return '-';

@@ -21,7 +21,7 @@ export function getJobInfo(name: string, email: string) {
     .join(' / ');
 }
 
-export function toReadableDate(date: Date | string, includeTime = false) {
+export function toReadableDate(date: Date | string, includeTime = false, hour12 = true) {
   const d = typeof date === 'string' ? new Date(date) : date;
   if (!(d instanceof Date) || Number.isNaN(d.getTime())) return '-';
 
@@ -36,7 +36,7 @@ export function toReadableDate(date: Date | string, includeTime = false) {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: true
+    hour12
   }).formatToParts(d);
 
   const getPart = (type: Intl.DateTimeFormatPartTypes) =>
@@ -47,6 +47,11 @@ export function toReadableDate(date: Date | string, includeTime = false) {
   const day = getPart('day');
   const hour = getPart('hour');
   const minute = getPart('minute');
+
+  if (!hour12) {
+    return `${year}-${month}-${day} ${hour}:${minute}`;
+  }
+
   const dayPeriod = getPart('dayPeriod').toUpperCase();
 
   return `${year}-${month}-${day} ${hour}:${minute} ${dayPeriod}`;
