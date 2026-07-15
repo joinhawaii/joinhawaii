@@ -48,13 +48,18 @@ export function toReadableDate(date: Date | string, includeTime = false, hour12 
   const hour = getPart('hour');
   const minute = getPart('minute');
 
-  if (!hour12) {
-    return `${year}-${month}-${day} ${hour}:${minute}`;
+  const dayPeriod = getPart('dayPeriod').toUpperCase();
+  const isMidnight = hour12
+    ? hour === '12' && minute === '00' && dayPeriod === 'AM'
+    : hour === '00' && minute === '00';
+
+  if (isMidnight) {
+    return `${year}-${month}-${day}`;
   }
 
-  const dayPeriod = getPart('dayPeriod').toUpperCase();
-
-  return `${year}-${month}-${day} ${hour}:${minute} ${dayPeriod}`;
+  return hour12
+    ? `${year}-${month}-${day} ${hour}:${minute} ${dayPeriod}`
+    : `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
 export function toReadableAmount(
