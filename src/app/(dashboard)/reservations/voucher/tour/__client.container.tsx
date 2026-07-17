@@ -375,34 +375,36 @@ function VoucherTourForm({ reservationId, selectedProduct, clients }: VoucherTou
                 />
               </td>
             </tr>
-            <tr>
-              <th className={styles['info-th']}>면책동의서</th>
-              <td className={styles['info-td']} colSpan={3}>
-                <Box className='print:hidden'>
-                  <Controller
-                    name='liability_waiver_url'
-                    control={control}
-                    rules={{
-                      pattern: {
-                        value: /^https?:\/\/\S+$/i,
-                        message: '올바른 URL 형식을 입력해주세요.'
-                      }
-                    }}
-                    render={({ field }) => (
-                      <TextField.Root
-                        {...field}
-                        type='url'
-                        placeholder='https://example.com/waiver'
-                        color={errors.liability_waiver_url ? 'red' : undefined}
-                      />
-                    )}
-                  />
-                </Box>
-                <Text className='print:only' style={{ wordBreak: 'break-all' }}>
-                  {watch('liability_waiver_url') || '-'}
-                </Text>
-              </td>
-            </tr>
+            {watch('liability_waiver_url') && (
+              <tr>
+                <th className={styles['info-th']}>면책동의서</th>
+                <td className={styles['info-td']} colSpan={3}>
+                  <Box className='print:hidden'>
+                    <Controller
+                      name='liability_waiver_url'
+                      control={control}
+                      rules={{
+                        pattern: {
+                          value: /^https?:\/\/\S+$/i,
+                          message: '올바른 URL 형식을 입력해주세요.'
+                        }
+                      }}
+                      render={({ field }) => (
+                        <TextField.Root
+                          {...field}
+                          type='url'
+                          placeholder='https://example.com/waiver'
+                          color={errors.liability_waiver_url ? 'red' : undefined}
+                        />
+                      )}
+                    />
+                  </Box>
+                  <Text className='print:only' style={{ wordBreak: 'break-all' }}>
+                    {watch('liability_waiver_url')}
+                  </Text>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
 
