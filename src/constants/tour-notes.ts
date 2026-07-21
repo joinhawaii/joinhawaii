@@ -97,7 +97,7 @@ export const KANEOHE_SANDBAR_ADVENTURE = {
   arrival_location:
     '<p>SHERATON WAIKIKI 호텔 - 고객 전용 주차장 건물 입구 Donho Lane (돈호레인)</p><p><span class="node-image"><span class="image-component"><img src="https://hpwrnhxgnawyfmhwqqsm.supabase.co/storage/v1/object/public/location-images/reservations/20260529-JH001/location/e0f80ccb-6c1c-432e-a4e9-f613d2c002da.jpg" alt="SHERATON WAIKIKI 호텔 - 고객 전용 주차장 건물 입구 Donho Lane (돈호레인) 1.jpg" title="" width="368.34722900390625" height="227.03808496021693" style="max-width: 368.34722900390625px" data-keep-ratio="true" class=""></span></span></p>',
   guide_notes:
-    '<ul><li><p>본 바우처를 출력 또는 캡쳐하여 가져가시기 바랍니다. 바우처 미 지참시 진행이 불가합니다.</p></li><li><p><span style="color: rgb(59, 130, 246);"><strong>수영복(옷 안에 미리 착용), 래쉬가드, 아쿠아슈즈, 비치타올, 선크림, 여벌 옷 등 개인물품을 준비하여 주시기 바랍니다.</strong></span></p></li><li><p>픽업시간 보다 5분 일찍 픽업장소에서 대기하여 주시기 바랍니다.</p></li><li><p>픽업시간이 5분 정도 지연될 경우 픽업장소를 이탈하지 마시고, 조인하와이 현지 데스크로 연락주시기 바랍니다. 픽업시간 지연 시 연락을 주시지 않아 픽업이 안되었을 경우 취소 및 환불이 불가합니다.</p></li><li><p>픽업시간 불이행으로 인한 행사 불참 시에는 별도의 연락은 드리지 않으며, 전액 환불 불가합니다.</p></li></ul><p></p>'
+    '<ul><li><p>본 바우처를 출력 또는 캡쳐하여 가져가시기 바랍니다. 바우처 미 지참시 진행이 불가합니다.</p></li><li><p><span style="color: rgb(59, 130, 246);"><strong>수영복(옷 안에 미리 착용), 래쉬가드, 아쿠아슈즈, 비치타올, 선크림, 여벌 옷 등 개인물품을 준비하여 주시기 바랍니다.</strong></span></p></li><li><p><span style="color: rgb(59, 130, 246);"><strong>팁 불포함이므로 $10/인 현금으로 사전 준비하셔서 투어 당일 드라이버에게 현장 지불하셔야 합니다.</strong></span></p></li><li><p>픽업시간 보다 5분 일찍 픽업장소에서 대기하여 주시기 바랍니다.</p></li><li><p>픽업시간이 5분 정도 지연될 경우 픽업장소를 이탈하지 마시고, 조인하와이 현지 데스크로 연락주시기 바랍니다. 픽업시간 지연 시 연락을 주시지 않아 픽업이 안되었을 경우 취소 및 환불이 불가합니다.</p></li><li><p>픽업시간 불이행으로 인한 행사 불참 시에는 별도의 연락은 드리지 않으며, 전액 환불 불가합니다.</p></li></ul>'
 };
 
 export const HAWAII_SNAP = {
