@@ -7,6 +7,7 @@ import {
   extractDateString,
   isDev,
   isRefunded,
+  selectOnFocus,
   updateDateInISO
 } from '@/utils';
 import {
@@ -205,6 +206,7 @@ export default function FlightForm({ data, mutation }: ProductFormProps) {
                             size='1'
                             type='number'
                             min='0'
+                            onFocus={selectOnFocus}
                             {...register(`flights.${i}.adult_count`, {
                               valueAsNumber: true
                             })}
@@ -216,6 +218,7 @@ export default function FlightForm({ data, mutation }: ProductFormProps) {
                             size='1'
                             type='number'
                             min='0'
+                            onFocus={selectOnFocus}
                             {...register(`flights.${i}.children_count`, {
                               valueAsNumber: true
                             })}
@@ -227,6 +230,7 @@ export default function FlightForm({ data, mutation }: ProductFormProps) {
                             size='1'
                             type='number'
                             min='0'
+                            onFocus={selectOnFocus}
                             {...register(`flights.${i}.kids_count`, {
                               valueAsNumber: true
                             })}

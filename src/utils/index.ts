@@ -1,6 +1,7 @@
 import { JOB_FUNCTION, TIME_ZONE } from '@/constants';
 import { PaymentStatusKey, ProductStatusKey } from '@/types';
 import type { PostgrestError } from '@supabase/supabase-js';
+import type { FocusEvent } from 'react';
 import { toast } from 'react-toastify';
 
 export function jobTitles(email?: string) {
@@ -207,6 +208,10 @@ export function normalizeNumber(v: unknown) {
   if (v === '' || v === undefined || v === null) return 0;
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;
+}
+
+export function selectOnFocus(e: FocusEvent<HTMLInputElement>) {
+  e.target.select();
 }
 
 export const getPaymentStatus = ({

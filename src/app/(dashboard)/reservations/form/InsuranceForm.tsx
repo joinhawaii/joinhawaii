@@ -7,6 +7,7 @@ import {
   isDev,
   isRefunded,
   normalizeNumber,
+  selectOnFocus,
   toReadableAmount
 } from '@/utils';
 import {
@@ -190,6 +191,7 @@ export default function InsuranceForm({
                               min='0'
                               step='0.01'
                               value={field.value}
+                              onFocus={selectOnFocus}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 const { value } = e.target;
                                 if (!value) return field.onChange(value);
@@ -275,6 +277,7 @@ export default function InsuranceForm({
                               step='0.01'
                               color='blue'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`insurances.${i}.adult_cost`, {
                                 required: true,
                                 valueAsNumber: true
@@ -290,6 +293,7 @@ export default function InsuranceForm({
                               step='0.01'
                               color='blue'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`insurances.${i}.children_cost`, {
                                 required: true,
                                 valueAsNumber: true
@@ -325,6 +329,7 @@ export default function InsuranceForm({
                               step='0.01'
                               color='orange'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`insurances.${i}.adult_price`, {
                                 required: true,
                                 valueAsNumber: true
@@ -340,6 +345,7 @@ export default function InsuranceForm({
                               step='0.01'
                               color='orange'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`insurances.${i}.children_price`, {
                                 required: true,
                                 valueAsNumber: true
@@ -372,6 +378,7 @@ export default function InsuranceForm({
                               size='1'
                               type='number'
                               min='0'
+                              onFocus={selectOnFocus}
                               {...register(`insurances.${i}.adult_count`, {
                                 required: true,
                                 valueAsNumber: true
@@ -384,6 +391,7 @@ export default function InsuranceForm({
                               size='1'
                               type='number'
                               min='0'
+                              onFocus={selectOnFocus}
                               {...register(`insurances.${i}.children_count`, {
                                 required: true,
                                 valueAsNumber: true
@@ -396,6 +404,7 @@ export default function InsuranceForm({
                               size='1'
                               type='number'
                               min='0'
+                              onFocus={selectOnFocus}
                               {...register(`insurances.${i}.kids_count`, {
                                 required: true,
                                 valueAsNumber: true

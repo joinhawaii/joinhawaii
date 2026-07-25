@@ -13,6 +13,7 @@ import {
   isDev,
   isRefunded,
   normalizeNumber,
+  selectOnFocus,
   toReadableAmount
 } from '@/utils';
 import {
@@ -178,6 +179,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               min='0'
                               step='0.01'
                               value={field.value}
+                              onFocus={selectOnFocus}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 const { value } = e.target;
                                 if (!value) return field.onChange(value);
@@ -245,6 +247,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               step='0.01'
                               color='blue'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`tours.${i}.adult_cost`, {
                                 required: true,
                                 valueAsNumber: true
@@ -260,6 +263,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               step='0.01'
                               color='blue'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`tours.${i}.children_cost`, {
                                 required: true,
                                 valueAsNumber: true
@@ -295,6 +299,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               step='0.01'
                               color='orange'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`tours.${i}.adult_price`, {
                                 required: true,
                                 valueAsNumber: true
@@ -310,6 +315,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               step='0.01'
                               color='orange'
                               variant='soft'
+                              onFocus={selectOnFocus}
                               {...register(`tours.${i}.children_price`, {
                                 required: true,
                                 valueAsNumber: true
@@ -342,6 +348,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               size='1'
                               type='number'
                               min='0'
+                              onFocus={selectOnFocus}
                               {...register(`tours.${i}.adult_count`, {
                                 required: true,
                                 valueAsNumber: true
@@ -354,6 +361,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               size='1'
                               type='number'
                               min='0'
+                              onFocus={selectOnFocus}
                               {...register(`tours.${i}.children_count`, {
                                 required: true,
                                 valueAsNumber: true
@@ -366,6 +374,7 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
                               size='1'
                               type='number'
                               min='0'
+                              onFocus={selectOnFocus}
                               {...register(`tours.${i}.kids_count`, {
                                 required: true,
                                 valueAsNumber: true

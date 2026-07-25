@@ -17,7 +17,7 @@ import {
 } from '@/constants';
 import useDeleteProduct from '@/hooks/useDeleteProduct';
 import type { ProductFormProps, ProductFormType, ReservationFormData } from '@/types';
-import { isDev, isRefunded, normalizeNumber, toReadableAmount } from '@/utils';
+import { isDev, isRefunded, normalizeNumber, selectOnFocus, toReadableAmount } from '@/utils';
 import {
   Box,
   Button,
@@ -186,6 +186,7 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
                               min='0'
                               step='0.01'
                               value={field.value}
+                              onFocus={selectOnFocus}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 const { value } = e.target;
                                 if (!value) return field.onChange(value);
@@ -260,6 +261,7 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
                           size='1'
                           type='number'
                           min='1'
+                          onFocus={selectOnFocus}
                           {...register(`hotels.${i}.nights`, {
                             required: true,
                             valueAsNumber: true
@@ -349,6 +351,7 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
                           step='0.01'
                           color='blue'
                           variant='soft'
+                          onFocus={selectOnFocus}
                           {...register(`hotels.${i}.cost`, {
                             required: true,
                             valueAsNumber: true
@@ -363,6 +366,7 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
                           step='0.01'
                           color='orange'
                           variant='soft'
+                          onFocus={selectOnFocus}
                           {...register(`hotels.${i}.nightly_rate`, {
                             required: true,
                             valueAsNumber: true
