@@ -55,6 +55,8 @@ export default function ReservationsFormClientContainer({
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [reservationFeeText, setReservationFeeText] = useState<string | null>(null);
+  const [depositText, setDepositText] = useState<string | null>(null);
 
   const { data, refetch } = useQuery({
     ...reservationQueryOptions(reservation_id!),
@@ -316,13 +318,26 @@ export default function ReservationsFormClientContainer({
                           render={({ field }) => (
                             <TextField.Root
                               size='3'
-                              type='number'
-                              step='1'
+                              type='text'
                               inputMode='numeric'
-                              value={field.value === 0 ? '' : field.value}
+                              value={
+                                reservationFeeText !== null
+                                  ? reservationFeeText
+                                  : field.value === 0
+                                    ? ''
+                                    : field.value.toLocaleString('en-US')
+                              }
+                              onFocus={() =>
+                                setReservationFeeText(field.value === 0 ? '' : String(field.value))
+                              }
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                const value = e.target.value;
-                                field.onChange(value === '' ? 0 : +value);
+                                const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+                                setReservationFeeText(digitsOnly);
+                                field.onChange(digitsOnly === '' ? 0 : +digitsOnly);
+                              }}
+                              onBlur={() => {
+                                setReservationFeeText(null);
+                                field.onBlur();
                               }}
                               placeholder='0'
                             >
@@ -361,14 +376,30 @@ export default function ReservationsFormClientContainer({
                           render={({ field }) => (
                             <TextField.Root
                               size='3'
-                              type='number'
-                              step='0.01'
-                              max={Number(data?.total_amount || 0)}
+                              type='text'
                               inputMode='decimal'
-                              value={field.value === 0 ? '' : field.value}
+                              value={
+                                depositText !== null
+                                  ? depositText
+                                  : field.value === 0
+                                    ? ''
+                                    : field.value.toLocaleString('en-US', {
+                                        maximumFractionDigits: 2
+                                      })
+                              }
+                              onFocus={() =>
+                                setDepositText(field.value === 0 ? '' : String(field.value))
+                              }
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                const value = e.target.value;
-                                field.onChange(value === '' ? 0 : +value);
+                                const cleaned = e.target.value
+                                  .replace(/[^0-9.]/g, '')
+                                  .replace(/(\..*)\./g, '$1');
+                                setDepositText(cleaned);
+                                field.onChange(cleaned === '' || cleaned === '.' ? 0 : +cleaned);
+                              }}
+                              onBlur={() => {
+                                setDepositText(null);
+                                field.onBlur();
                               }}
                               placeholder='0'
                             >
@@ -388,7 +419,9 @@ export default function ReservationsFormClientContainer({
                         <TextField.Root
                           readOnly
                           size='3'
-                          value={Number(data?.total_amount ?? 0) - (depositValue || 0)}
+                          value={(
+                            Number(data?.total_amount ?? 0) - (depositValue || 0)
+                          ).toLocaleString('en-US', { maximumFractionDigits: 2 })}
                         >
                           <TextField.Slot>$</TextField.Slot>
                         </TextField.Root>
