@@ -566,7 +566,7 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
               >
                 <Minus size='20' /> 삭제
               </Button>
-              <Button loading={mutation.isPending || !hotels.length} variant='outline'>
+              <Button disabled={!hotels.length} loading={mutation.isPending} variant='outline'>
                 <Save /> 변경사항 저장
               </Button>
             </Flex>

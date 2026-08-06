@@ -615,7 +615,7 @@ export default function RentalCarForm({
               >
                 <Minus size='20' /> 삭제
               </Button>
-              <Button loading={mutation.isPending || !rentalCars.length} variant='outline'>
+              <Button disabled={!rentalCars.length} loading={mutation.isPending} variant='outline'>
                 <Save /> 변경사항 저장
               </Button>
             </Flex>
