@@ -1,16 +1,28 @@
 'use client';
 
+import { ProductDeleteButton } from '@/components';
 import { defaultAdditionalOptionValues, PRODUCT_STATUS_COLOR, ProductStatus } from '@/constants';
-import { updateAdditionalOptions } from '@/http';
+import { deleteAdditionalOption, updateAdditionalOptions } from '@/http';
 import type { AdditionalOptions, ProductType } from '@/types';
 import { handleApiError, handleApiSuccess, isDev } from '@/utils';
 import type { Observable, ObservableBoolean } from '@legendapp/state';
 import { use$ } from '@legendapp/state/react';
-import { Button, Dialog, Flex, Grid, Select, Table, TextArea, TextField } from '@radix-ui/themes';
+import {
+  AlertDialog,
+  Box,
+  Button,
+  Dialog,
+  Flex,
+  Grid,
+  Select,
+  Table,
+  TextArea,
+  TextField
+} from '@radix-ui/themes';
 import { useMutation } from '@tanstack/react-query';
 import { Minus, Plus, Save } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm, useWatch } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import AdditionalOptionsTotals from './AdditionalOptionsTotals';
@@ -59,6 +71,9 @@ export default function AdditionalOptionsEditor({
 
   const additionalOptions = useWatch({ control, name: 'additionalOptions' }) ?? [defaultValue];
 
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const mutation = useMutation({
     mutationFn: (formData: AdditionalOptions[]) => {
       return updateAdditionalOptions(formData);
@@ -98,6 +113,46 @@ export default function AdditionalOptionsEditor({
   const isRemoveProductDisabled = () => {
     const minLength = 1;
     return additionalOptions.length <= minLength;
+  };
+
+  const removeAdditionalOption = (index: number) => {
+    const target = additionalOptions[index];
+    if (target?.id) {
+      setPendingDeleteIndex(index);
+      return;
+    }
+
+    setValue(
+      'additionalOptions',
+      additionalOptions.filter((_, i) => i !== index),
+      { shouldDirty: true }
+    );
+  };
+
+  const confirmRemoveAdditionalOption = async () => {
+    const index = pendingDeleteIndex;
+    const target = index === null ? undefined : additionalOptions[index];
+    if (index === null || !target?.id) {
+      setPendingDeleteIndex(null);
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      await deleteAdditionalOption(target.id);
+      toast.success('항목이 삭제되었습니다.');
+      setValue(
+        'additionalOptions',
+        additionalOptions.filter((_, i) => i !== index),
+        { shouldDirty: true }
+      );
+      onRefetch();
+    } catch (error) {
+      handleApiError(error as Error);
+    } finally {
+      setIsDeleting(false);
+      setPendingDeleteIndex(null);
+    }
   };
 
   return (
@@ -236,11 +291,16 @@ export default function AdditionalOptionsEditor({
                     />
                   </Table.Cell>
                   <Table.Cell>
-                    <TextArea
-                      size='3'
-                      resize='vertical'
-                      {...register(`additionalOptions.${i}.notes`)}
-                    />
+                    <Flex justify='center' align='center' gap='2'>
+                      <Box flexGrow='1'>
+                        <TextArea
+                          size='3'
+                          resize='vertical'
+                          {...register(`additionalOptions.${i}.notes`)}
+                        />
+                      </Box>
+                      <ProductDeleteButton onClick={() => removeAdditionalOption(i)} />
+                    </Flex>
                   </Table.Cell>
                   <Table.Cell hidden>
                     <AdditionalOptionsTotals index={i} setValue={setValue} control={control} />
@@ -272,6 +332,39 @@ export default function AdditionalOptionsEditor({
         </form>
         {isDev() && <pre>{JSON.stringify(watch('additionalOptions'), null, 2)}</pre>}
       </Dialog.Content>
+
+      <AlertDialog.Root
+        open={pendingDeleteIndex !== null}
+        onOpenChange={open => {
+          if (!open) setPendingDeleteIndex(null);
+        }}
+      >
+        <AlertDialog.Content maxWidth='450px'>
+          <AlertDialog.Title>삭제 확인</AlertDialog.Title>
+          <AlertDialog.Description size='2'>
+            해당 추가 옵션을 삭제하시겠습니까? 삭제한 항목은 복구할 수 없습니다.
+          </AlertDialog.Description>
+          <Flex gap='1' mt='4' justify='end'>
+            <AlertDialog.Cancel>
+              <Button variant='soft' color='gray'>
+                취소
+              </Button>
+            </AlertDialog.Cancel>
+            <AlertDialog.Action>
+              <Button
+                color='ruby'
+                loading={isDeleting}
+                onClick={e => {
+                  e.preventDefault();
+                  confirmRemoveAdditionalOption();
+                }}
+              >
+                삭제
+              </Button>
+            </AlertDialog.Action>
+          </Flex>
+        </AlertDialog.Content>
+      </AlertDialog.Root>
     </Dialog.Root>
   );
 }

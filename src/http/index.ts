@@ -227,6 +227,24 @@ export async function updateAdditionalOptions(data: AdditionalOptions[]) {
   return response.json();
 }
 
+export const deleteAdditionalOption = async (id: number) => {
+  const response = await fetch('/api/product/options', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id })
+  });
+
+  const result = await response.json();
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.error || '추가 옵션 삭제에 실패했습니다.');
+  }
+
+  return result;
+};
+
 export async function getAdditionalOptions({ pid = 0, type = '' }): Promise<AdditionalOptions[]> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   let url = `${baseUrl}/api/product/options`;

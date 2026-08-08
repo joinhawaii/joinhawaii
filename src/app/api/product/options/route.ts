@@ -36,6 +36,58 @@ export async function POST(request: Request) {
   }
 }
 
+export async function DELETE(request: Request) {
+  try {
+    const body = (await request.json()) as { id: number };
+
+    if (!Number.isFinite(body.id)) {
+      throw new Error('유효한 id가 필요합니다.');
+    }
+
+    const supabase = await createClient();
+
+    const { data: deletedRow, error: deleteError } = await supabase
+      .from('options')
+      .delete()
+      .select('reservation_id')
+      .eq('id', body.id)
+      .single();
+
+    if (deleteError) {
+      throw deleteError;
+    }
+
+    if (!deletedRow?.reservation_id) {
+      throw new Error('삭제된 항목의 예약 정보를 찾을 수 없습니다.');
+    }
+
+    const { error: totalError } = await supabase.rpc('calculate_reservation_total', {
+      p_reservation_id: deletedRow.reservation_id
+    });
+
+    if (totalError) {
+      throw totalError;
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        id: body.id,
+        reservation_id: deletedRow.reservation_id
+      }
+    });
+  } catch (error) {
+    console.error('추가 옵션 삭제 에러:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : '추가 옵션 삭제에 실패했습니다.'
+      },
+      { status: 500 }
+    );
+  }
+}
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
