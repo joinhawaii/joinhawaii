@@ -113,9 +113,7 @@ export function ReservationConfirmationPreview({ data }: ReservationConfirmation
                     {data.created_at ? new Date(data.created_at).toLocaleDateString() : '-'}
                   </td>
                   <th className={styles.th}>담당자</th>
-                  <td className={styles.td}>
-                    {getJobInfo(data.author ?? '', data.author_email ?? '')}
-                  </td>
+                  <td className={styles.td}>{getJobInfo(data.author_email ?? '')}</td>
                   <th className={styles.th}>이메일</th>
                   <td className={styles.td}>
                     <a href='mailto:joinhawaii@joinhawaii.com'>joinhawaii@joinhawaii.com</a>

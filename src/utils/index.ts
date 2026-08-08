@@ -16,10 +16,8 @@ export function jobTel(email?: string) {
   return JOB_FUNCTION[email]?.tel || '';
 }
 
-export function getJobInfo(name: string, email: string) {
-  return [[name, jobTitles(email)].filter(Boolean).join(' '), jobTel(email)]
-    .filter(Boolean)
-    .join(' / ');
+export function getJobInfo(email: string) {
+  return [jobTitles(email), jobTel(email)].filter(Boolean).join(' / ');
 }
 
 export function toReadableDate(date: Date | string, includeTime = false, hour12 = true) {
