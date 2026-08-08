@@ -81,7 +81,7 @@ export default function ProgressClientContainer({ reservation_id }: { reservatio
               onChange={value => field.onChange(value)}
               placeholder='진행사항을 입력하세요.'
               height='min-h-[600px]'
-              baseFontSize={14}
+              baseFontSize={16}
             />
           )}
         />
