@@ -103,6 +103,7 @@ export default function ClientForm({
 
     const normalizedClients = formData.clients.map((client, index) => ({
       ...client,
+      english_name: client.english_name?.trim(),
       is_main_client: index === formSelectedIndex
     }));
 
@@ -403,8 +404,7 @@ export default function ClientForm({
                             ref={field.ref}
                             value={field.value}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                              const newValue = e.target.value.toUpperCase().trim();
-                              field.onChange(newValue);
+                              field.onChange(e.target.value.toUpperCase());
                             }}
                             placeholder='KANG HEECHANG'
                           />
