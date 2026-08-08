@@ -498,7 +498,7 @@ function VoucherTourForm({ reservationId, selectedProduct, clients }: VoucherTou
                     <Tiptap
                       value={field.value}
                       onChange={field.onChange}
-                      height='min-h-[160px]'
+                      height='min-h-[220px]'
                       placeholder='전달 사항을 입력하세요.'
                     />
                   )}

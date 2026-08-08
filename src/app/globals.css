@@ -90,7 +90,7 @@ button:not(:disabled) {
 
 .tiptap.ProseMirror {
   overflow: auto;
-  min-height: 220px;
+  min-height: var(--tiptap-min-height, 220px);
   padding: 2px;
   font-size: var(--tiptap-base-font-size, 12px);
 

@@ -598,6 +598,8 @@ export const Tiptap = ({
     </Tooltip>
   );
 
+  const heightPx = height.match(/\[(\d+)px\]/)?.[1] ?? '400';
+
   return (
     <Box className={styles['tiptap-root']}>
       <Flex wrap='wrap' align='center' gap='2' p='3' className={styles['tiptap-toolbar']}>
@@ -872,7 +874,12 @@ export const Tiptap = ({
       <Box
         p='4'
         position='relative'
-        style={{ '--tiptap-base-font-size': `${DEFAULT_FONT_SIZE_PX}px` } as React.CSSProperties}
+        style={
+          {
+            '--tiptap-base-font-size': `${DEFAULT_FONT_SIZE_PX}px`,
+            '--tiptap-min-height': `${heightPx}px`
+          } as React.CSSProperties
+        }
       >
         {isHtmlMode ? (
           <TextArea
@@ -880,7 +887,7 @@ export const Tiptap = ({
             onChange={handleHtmlDraftChange}
             style={{
               width: '100%',
-              minHeight: `${height.match(/\[(\d+)px\]/)?.[1] ?? 400}px`,
+              minHeight: `${heightPx}px`,
               maxHeight: '880px',
               fontFamily: 'monospace',
               fontSize: '12px',
