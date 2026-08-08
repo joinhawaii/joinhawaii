@@ -47,6 +47,8 @@ export enum ProductStatus {
   Checked = '확인'
 }
 
+export const VOIDED_PRODUCT_STATUSES: ProductStatusKey[] = ['Cancelled', 'Refunded'];
+
 export enum PaymentStatus {
   Unpaid = '미납',
   Deposit = '예약금',

@@ -1,4 +1,4 @@
-import { JOB_FUNCTION, TIME_ZONE } from '@/constants';
+import { JOB_FUNCTION, TIME_ZONE, VOIDED_PRODUCT_STATUSES } from '@/constants';
 import { PaymentStatusKey, ProductStatusKey } from '@/types';
 import type { PostgrestError } from '@supabase/supabase-js';
 import type { FocusEvent } from 'react';
@@ -336,6 +336,10 @@ export function generateMinuteOptions(interval: number = 10): number[] {
 
 export function isRefunded(status: string, originalStatus: string) {
   return status === 'Refunded' && originalStatus === 'Refunded';
+}
+
+export function isVoidedStatus(status: ProductStatusKey) {
+  return VOIDED_PRODUCT_STATUSES.includes(status);
 }
 
 /**
