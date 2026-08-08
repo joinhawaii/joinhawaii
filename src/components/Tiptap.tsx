@@ -56,6 +56,7 @@ interface TiptapProps {
   imageUploadFolder?: string;
   simpleMode?: boolean;
   height?: string;
+  baseFontSize?: number;
   placeholder?: string;
 }
 
@@ -106,11 +107,11 @@ const FontSize = Extension.create({
   }
 });
 
-const getFontSizePxFromStyle = (fontSize: string | null | undefined) => {
-  if (!fontSize) return DEFAULT_FONT_SIZE_PX;
+const getFontSizePxFromStyle = (fontSize: string | null | undefined, fallback: number) => {
+  if (!fontSize) return fallback;
 
   const parsed = Number.parseInt(fontSize, 10);
-  if (!Number.isFinite(parsed)) return DEFAULT_FONT_SIZE_PX;
+  if (!Number.isFinite(parsed)) return fallback;
 
   return parsed;
 };
@@ -328,6 +329,7 @@ export const Tiptap = ({
   imageUploadFolder,
   simpleMode = false,
   height = 'min-h-[400px]',
+  baseFontSize = DEFAULT_FONT_SIZE_PX,
   placeholder = '이미지를 올려놓거나 붙여넣기, 선택 후 리사이즈가 가능합니다.'
 }: TiptapProps) => {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
@@ -535,7 +537,10 @@ export const Tiptap = ({
     return false;
   };
 
-  const currentFontSize = getFontSizePxFromStyle(editor?.getAttributes('textStyle').fontSize);
+  const currentFontSize = getFontSizePxFromStyle(
+    editor?.getAttributes('textStyle').fontSize,
+    baseFontSize
+  );
 
   const decreaseFontSize = () => setFontSize(currentFontSize - FONT_SIZE_STEP_PX);
   const increaseFontSize = () => setFontSize(currentFontSize + FONT_SIZE_STEP_PX);
@@ -876,7 +881,7 @@ export const Tiptap = ({
         position='relative'
         style={
           {
-            '--tiptap-base-font-size': `${DEFAULT_FONT_SIZE_PX}px`,
+            '--tiptap-base-font-size': `${baseFontSize}px`,
             '--tiptap-min-height': `${heightPx}px`
           } as React.CSSProperties
         }
