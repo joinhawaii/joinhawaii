@@ -1,7 +1,13 @@
 'use client';
 
 import { PAYMENT_STATUS_COLOR, PaymentStatus, PRODUCT_OPTIONS, QUERY_KEYS } from '@/constants';
-import { createReservation, deleteReservation, updateReservation } from '@/http';
+import { useAuth } from '@/hooks';
+import {
+  createReservation,
+  deleteReservation,
+  publishReservationConfirmation,
+  updateReservation
+} from '@/http';
 import { reservationQueryOptions } from '@/lib/queries';
 import type {
   AdditionalOptions,
@@ -22,7 +28,7 @@ import {
   TextField
 } from '@radix-ui/themes';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { FileText } from 'lucide-react';
+import { FileText, Send } from 'lucide-react';
 import { useRouter } from 'nextjs-toploader/app';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm, useWatch } from 'react-hook-form';
@@ -54,6 +60,7 @@ export default function ReservationsFormClientContainer({
 }) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [reservationFeeText, setReservationFeeText] = useState<string | null>(null);
   const [depositText, setDepositText] = useState<string | null>(null);
@@ -61,6 +68,18 @@ export default function ReservationsFormClientContainer({
   const { data, refetch } = useQuery({
     ...reservationQueryOptions(reservation_id!),
     enabled: !!reservation_id
+  });
+
+  const isAuthor = !!user?.email && user.email === data?.author_email;
+  const isConfirmationPublished = !!data?.is_confirmation_published;
+
+  const publishMutation = useMutation({
+    mutationFn: () => publishReservationConfirmation(data!.reservation_id!),
+    onSuccess: () => {
+      toast.success('예약확인서가 발행되었습니다.');
+      refetch();
+    },
+    onError: handleApiError
   });
 
   useEffect(() => {
@@ -437,6 +456,7 @@ export default function ReservationsFormClientContainer({
                             variant='outline'
                             size='3'
                             type='button'
+                            disabled={!isConfirmationPublished}
                             onClick={() => {
                               if (data?.reservation_id) {
                                 window.open(
@@ -449,6 +469,17 @@ export default function ReservationsFormClientContainer({
                           >
                             <FileText />
                             예약확인서
+                          </Button>
+                          <Button
+                            variant='outline'
+                            size='3'
+                            type='button'
+                            loading={publishMutation.isPending}
+                            disabled={!isAuthor || isConfirmationPublished}
+                            onClick={() => publishMutation.mutate()}
+                          >
+                            <Send />
+                            {isConfirmationPublished ? '발행완료' : '발행'}
                           </Button>
                         </Flex>
                       </Table.Cell>

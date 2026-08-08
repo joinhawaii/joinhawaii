@@ -10,6 +10,7 @@ export const RESERVATION_SELECT_QUERY = `
   deposit,
   author,
   author_email,
+  is_confirmation_published,
   content,
   trip_type,
   travel_category,

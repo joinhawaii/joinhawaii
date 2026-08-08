@@ -138,6 +138,7 @@ export interface Database {
           total_amount_krw?: number;
           total_cost_krw?: number;
           payment_status?: string;
+          is_confirmation_published?: boolean;
         },
         Partial<ReservationBaseInfo> & {
           id?: number;
@@ -147,6 +148,7 @@ export interface Database {
           author?: string;
           author_email?: string;
           main_client_name: string;
+          is_confirmation_published?: boolean;
         }
       >;
       clients: TableSchema<
@@ -237,6 +239,7 @@ export interface Reservation extends ReservationBaseInfo {
   author?: string;
   author_email?: string;
   payment_status: PaymentStatusKey;
+  is_confirmation_published?: boolean;
 }
 
 export type ReservationProducts = {

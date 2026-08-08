@@ -209,6 +209,24 @@ export const deleteReservation = async (reservation_id: string) => {
   return result;
 };
 
+export const publishReservationConfirmation = async (reservation_id: string) => {
+  const response = await fetch('/api/reservation/publish', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ reservation_id })
+  });
+
+  const result = await response.json();
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.error || '예약확인서 발행에 실패했습니다.');
+  }
+
+  return result;
+};
+
 export async function updateAdditionalOptions(data: AdditionalOptions[]) {
   const payload = data.map(({ total_amount_krw, total_cost_krw, ...rest }) => rest);
 

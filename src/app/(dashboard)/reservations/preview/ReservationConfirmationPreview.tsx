@@ -71,9 +71,7 @@ function formatClientName(client: { korean_name: string; is_main_client: boolean
 }
 
 export function ReservationConfirmationPreview({ data }: ReservationConfirmationPreviewProps) {
-  const flights = (data.products?.flights ?? []).filter(
-    product => !isVoidedStatus(product.status)
-  );
+  const flights = (data.products?.flights ?? []).filter(product => !isVoidedStatus(product.status));
   const hotels = (data.products?.hotels ?? []).filter(product => !isVoidedStatus(product.status));
   const tours = (data.products?.tours ?? []).filter(product => !isVoidedStatus(product.status));
   const rentalCars = (data.products?.rental_cars ?? []).filter(
