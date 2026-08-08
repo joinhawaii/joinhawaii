@@ -17,7 +17,14 @@ import {
 } from '@/constants';
 import useDeleteProduct from '@/hooks/useDeleteProduct';
 import type { ProductFormProps, ProductFormType, ReservationFormData } from '@/types';
-import { isDev, isRefunded, normalizeNumber, selectOnFocus, toReadableAmount } from '@/utils';
+import {
+  isDev,
+  isRefunded,
+  isVoidedStatus,
+  normalizeNumber,
+  selectOnFocus,
+  toReadableAmount
+} from '@/utils';
 import {
   Box,
   Button,
@@ -388,7 +395,7 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
                             {toReadableAmount(
                               (hotel.additional_options || []).reduce(
                                 (sum, opt) =>
-                                  sum + (opt.status !== 'Refunded' ? opt.total_cost : 0),
+                                  sum + (!isVoidedStatus(opt.status) ? opt.total_cost : 0),
                                 0
                               )
                             )}
@@ -398,7 +405,7 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
                             {toReadableAmount(
                               (hotel.additional_options || []).reduce(
                                 (sum, opt) =>
-                                  sum + (opt.status !== 'Refunded' ? opt.total_amount : 0),
+                                  sum + (!isVoidedStatus(opt.status) ? opt.total_amount : 0),
                                 0
                               )
                             )}
@@ -422,10 +429,10 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
                               value={field.value}
                               onValueChange={value => {
                                 if (
-                                  value === 'Refunded' &&
+                                  isVoidedStatus(value) &&
                                   hotel.additional_options.length > 0 &&
                                   hotel.additional_options
-                                    .filter(({ status }) => status !== 'Refunded')
+                                    .filter(({ status }) => !isVoidedStatus(status))
                                     .reduce((accu, curr) => accu + curr.total_amount, 0) > 0
                                 ) {
                                   if (hotel.id) openDialog(hotel.id);

@@ -6,6 +6,7 @@ import {
   calculateTotalAmount,
   isDev,
   isRefunded,
+  isVoidedStatus,
   normalizeNumber,
   selectOnFocus,
   toReadableAmount
@@ -428,7 +429,7 @@ export default function InsuranceForm({
                             {toReadableAmount(
                               (insurance.additional_options || []).reduce(
                                 (sum, opt) =>
-                                  sum + (opt.status !== 'Refunded' ? opt.total_cost : 0),
+                                  sum + (!isVoidedStatus(opt.status) ? opt.total_cost : 0),
                                 0
                               )
                             )}
@@ -438,7 +439,7 @@ export default function InsuranceForm({
                             {toReadableAmount(
                               (insurance.additional_options || []).reduce(
                                 (sum, opt) =>
-                                  sum + (opt.status !== 'Refunded' ? opt.total_amount : 0),
+                                  sum + (!isVoidedStatus(opt.status) ? opt.total_amount : 0),
                                 0
                               )
                             )}
@@ -462,10 +463,10 @@ export default function InsuranceForm({
                               value={field.value}
                               onValueChange={value => {
                                 if (
-                                  value === 'Refunded' &&
+                                  isVoidedStatus(value) &&
                                   insurance.additional_options.length > 0 &&
                                   insurance.additional_options
-                                    .filter(({ status }) => status !== 'Refunded')
+                                    .filter(({ status }) => !isVoidedStatus(status))
                                     .reduce((accu, curr) => accu + curr.total_amount, 0) > 0
                                 ) {
                                   if (insurance.id) openDialog(insurance.id);

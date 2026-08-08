@@ -335,11 +335,11 @@ export function generateMinuteOptions(interval: number = 10): number[] {
 }
 
 export function isRefunded(status: string, originalStatus: string) {
-  return status === 'Refunded' && originalStatus === 'Refunded';
+  return status === originalStatus && isVoidedStatus(status);
 }
 
-export function isVoidedStatus(status: ProductStatusKey) {
-  return VOIDED_PRODUCT_STATUSES.includes(status);
+export function isVoidedStatus(status: string) {
+  return (VOIDED_PRODUCT_STATUSES as string[]).includes(status);
 }
 
 /**

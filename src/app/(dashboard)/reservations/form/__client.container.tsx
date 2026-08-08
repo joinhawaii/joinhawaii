@@ -9,7 +9,7 @@ import type {
   ReservationFormData,
   ReservationResponse
 } from '@/types';
-import { handleApiError, handleApiSuccess, toReadableAmount } from '@/utils';
+import { handleApiError, handleApiSuccess, isVoidedStatus, toReadableAmount } from '@/utils';
 import { observable } from '@legendapp/state';
 import {
   AlertDialog,
@@ -153,7 +153,7 @@ export default function ReservationsFormClientContainer({
 
   const getProductTotalAmount = (products: Array<{ status: string; total_amount: number }>) => {
     return products.reduce(
-      (sum, product) => sum + (product.status !== 'Refunded' ? product.total_amount : 0),
+      (sum, product) => sum + (!isVoidedStatus(product.status) ? product.total_amount : 0),
       0
     );
   };
@@ -164,10 +164,10 @@ export default function ReservationsFormClientContainer({
     return products.reduce(
       (sum, product) =>
         sum +
-        (product.status !== 'Refunded'
+        (!isVoidedStatus(product.status)
           ? (product.additional_options ?? []).reduce(
               (optionSum, option) =>
-                optionSum + (option.status !== 'Refunded' ? option.total_amount : 0),
+                optionSum + (!isVoidedStatus(option.status) ? option.total_amount : 0),
               0
             )
           : 0),

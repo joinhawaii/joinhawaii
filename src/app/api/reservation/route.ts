@@ -12,7 +12,7 @@ import type {
   ReservationUpdateRequest,
   TablesInsert
 } from '@/types';
-import { compareByDateField, isPostgrestError } from '@/utils';
+import { compareByDateField, isPostgrestError, isVoidedStatus } from '@/utils';
 import { NextResponse } from 'next/server';
 
 const toComparableId = (id: unknown) => {
@@ -222,9 +222,9 @@ export async function GET(request: Request) {
             const optionsTotals = optionsWithKrw.reduce(
               (acc, o) => ({
                 total_amount_krw:
-                  acc.total_amount_krw + (o.status !== 'Refunded' ? o.total_amount_krw : 0),
+                  acc.total_amount_krw + (!isVoidedStatus(o.status) ? o.total_amount_krw : 0),
                 total_cost_krw:
-                  acc.total_cost_krw + (o.status !== 'Refunded' ? o.total_cost_krw : 0)
+                  acc.total_cost_krw + (!isVoidedStatus(o.status) ? o.total_cost_krw : 0)
               }),
               { total_amount_krw: 0, total_cost_krw: 0 }
             );
@@ -276,9 +276,10 @@ export async function GET(request: Request) {
         return products.reduce(
           (acc, product) => ({
             total_amount_krw:
-              acc.total_amount_krw + (product.status !== 'Refunded' ? product.total_amount_krw : 0),
+              acc.total_amount_krw +
+              (!isVoidedStatus(product.status) ? product.total_amount_krw : 0),
             total_cost_krw:
-              acc.total_cost_krw + (product.status !== 'Refunded' ? product.total_cost_krw : 0)
+              acc.total_cost_krw + (!isVoidedStatus(product.status) ? product.total_cost_krw : 0)
           }),
           { total_amount_krw: 0, total_cost_krw: 0 }
         );
@@ -306,7 +307,7 @@ export async function GET(request: Request) {
 
       const sumProductsOriginal = (products: ProductValues[]) =>
         products
-          .filter(({ status }) => status !== 'Refunded')
+          .filter(({ status }) => !isVoidedStatus(status))
           .reduce((acc, product) => acc + product.total_amount, 0);
 
       const productsOriginalTotal =
@@ -322,7 +323,7 @@ export async function GET(request: Request) {
           return (
             acc +
             opts
-              .filter(({ status }) => status !== 'Refunded')
+              .filter(({ status }) => !isVoidedStatus(status))
               .reduce((s, opt) => s + opt.total_amount, 0)
           );
         }, 0);

@@ -1,6 +1,6 @@
 import { PAYMENT_STATUS_COLOR, PaymentStatus, TIME_ZONE } from '@/constants';
 import type { ReservationResponse } from '@/types';
-import { getJobInfo, toReadableAmount } from '@/utils';
+import { getJobInfo, isVoidedStatus, toReadableAmount } from '@/utils';
 import { Badge, Blockquote, Box, Flex, Heading, Section, Strong, Text } from '@radix-ui/themes';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
@@ -71,14 +71,16 @@ function formatClientName(client: { korean_name: string; is_main_client: boolean
 }
 
 export function ReservationConfirmationPreview({ data }: ReservationConfirmationPreviewProps) {
-  const flights = (data.products?.flights ?? []).filter(product => product.status !== 'Refunded');
-  const hotels = (data.products?.hotels ?? []).filter(product => product.status !== 'Refunded');
-  const tours = (data.products?.tours ?? []).filter(product => product.status !== 'Refunded');
+  const flights = (data.products?.flights ?? []).filter(
+    product => !isVoidedStatus(product.status)
+  );
+  const hotels = (data.products?.hotels ?? []).filter(product => !isVoidedStatus(product.status));
+  const tours = (data.products?.tours ?? []).filter(product => !isVoidedStatus(product.status));
   const rentalCars = (data.products?.rental_cars ?? []).filter(
-    product => product.status !== 'Refunded'
+    product => !isVoidedStatus(product.status)
   );
   const insurances = (data.products?.insurances ?? []).filter(
-    product => product.status !== 'Refunded'
+    product => !isVoidedStatus(product.status)
   );
 
   return (
