@@ -47,6 +47,8 @@ function TimeInputFields({
   const parsedTime = getTimeParts(isoValue);
   const [hoursInput, setHoursInput] = useState(String(parsedTime.hours));
   const [minutesInput, setMinutesInput] = useState(String(parsedTime.minutes));
+  const [isHoursFocused, setIsHoursFocused] = useState(false);
+  const [isMinutesFocused, setIsMinutesFocused] = useState(false);
 
   useEffect(() => {
     const next = getTimeParts(isoValue);
@@ -114,9 +116,11 @@ function TimeInputFields({
       <TextField.Root
         size='1'
         type='text'
-        value={hoursInput}
+        value={isHoursFocused ? hoursInput : hoursInput.padStart(2, '0')}
         onChange={e => applyHours(e.target.value)}
+        onFocus={() => setIsHoursFocused(true)}
         onBlur={() => {
+          setIsHoursFocused(false);
           if (hoursInput === '') {
             setHoursInput(String(parsedTime.hours));
           }
@@ -128,9 +132,11 @@ function TimeInputFields({
       <TextField.Root
         size='1'
         type='text'
-        value={minutesInput}
+        value={isMinutesFocused ? minutesInput : minutesInput.padStart(2, '0')}
         onChange={e => applyMinutes(e.target.value)}
+        onFocus={() => setIsMinutesFocused(true)}
         onBlur={() => {
+          setIsMinutesFocused(false);
           if (minutesInput === '') {
             setMinutesInput(String(parsedTime.minutes));
           }
