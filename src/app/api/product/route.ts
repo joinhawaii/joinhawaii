@@ -293,11 +293,13 @@ export async function GET(request: Request) {
       );
     }
 
-    // Client name filter (partial match)
+    // Client name filter (partial match against main client or any client on the reservation)
     if (clientName) {
       const searchTerm = clientName.toLowerCase();
-      filteredProducts = filteredProducts.filter(product =>
-        product.main_client_name.toLowerCase().includes(searchTerm)
+      filteredProducts = filteredProducts.filter(
+        product =>
+          product.main_client_name.toLowerCase().includes(searchTerm) ||
+          product.clients.some(name => name.toLowerCase().includes(searchTerm))
       );
     }
 
