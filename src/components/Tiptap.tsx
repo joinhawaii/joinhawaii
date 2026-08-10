@@ -451,7 +451,7 @@ export const Tiptap = ({
   }, [editor, syncSignedImageUrls]);
 
   useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
+    if (editor && value !== cleanTiptapHTML(editor.getHTML())) {
       editor.commands.setContent(value || '');
       const cleaned = cleanTiptapHTML(editor.getHTML());
       if (cleaned !== value) {
