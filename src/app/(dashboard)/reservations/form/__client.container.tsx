@@ -1,7 +1,6 @@
 'use client';
 
 import { PAYMENT_STATUS_COLOR, PaymentStatus, PRODUCT_OPTIONS, QUERY_KEYS } from '@/constants';
-import { useAuth } from '@/hooks';
 import {
   createReservation,
   deleteReservation,
@@ -60,7 +59,6 @@ export default function ReservationsFormClientContainer({
 }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [reservationFeeText, setReservationFeeText] = useState<string | null>(null);
   const [depositText, setDepositText] = useState<string | null>(null);
@@ -70,7 +68,6 @@ export default function ReservationsFormClientContainer({
     enabled: !!reservation_id
   });
 
-  const isAuthor = !!user?.email && user.email === data?.author_email;
   const isConfirmationPublished = !!data?.is_confirmation_published;
 
   const publishMutation = useMutation({
@@ -475,7 +472,7 @@ export default function ReservationsFormClientContainer({
                             size='3'
                             type='button'
                             loading={publishMutation.isPending}
-                            disabled={!isAuthor || isConfirmationPublished}
+                            disabled={isConfirmationPublished}
                             onClick={() => publishMutation.mutate()}
                           >
                             <Send />
