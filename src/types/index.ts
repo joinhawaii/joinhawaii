@@ -74,6 +74,7 @@ export type BaseRow = {
   id: number;
   reservation_id: string;
   created_at: string;
+  updated_at: string;
   additional_options: AdditionalOptions[];
 };
 

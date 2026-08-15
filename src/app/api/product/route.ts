@@ -302,9 +302,9 @@ export async function GET(request: Request) {
       );
     }
 
-    // Sort by created_at descending
+    // Sort by updated_at descending
     filteredProducts.sort(
-      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
     );
 
     const total = filteredProducts.length;
