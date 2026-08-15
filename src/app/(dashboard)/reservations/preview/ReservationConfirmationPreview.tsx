@@ -243,7 +243,7 @@ export function ReservationConfirmationPreview({ data }: ReservationConfirmation
           </Heading>
           <div className={styles.outline}>
             <Box m='-1px'>
-              <table className={styles.table}>
+              <table className={`${styles.table} ${styles['no-repeat-header']}`}>
                 <colgroup>
                   <col width='100px' />
                   <col width='160px' />
@@ -318,7 +318,7 @@ export function ReservationConfirmationPreview({ data }: ReservationConfirmation
           </Heading>
           <div className={styles.outline}>
             <Box m='-1px'>
-              <table className={styles.table}>
+              <table className={`${styles.table} ${styles['no-repeat-header']}`}>
                 <colgroup>
                   <col width='90px' />
                   <col />
@@ -487,7 +487,7 @@ export function ReservationConfirmationPreview({ data }: ReservationConfirmation
           </Heading>
           <div className={styles.outline}>
             <Box m='-1px'>
-              <table className={styles.table}>
+              <table className={`${styles.table} ${styles['no-repeat-header']}`}>
                 <colgroup>
                   <col width='90px' />
                   <col />
@@ -604,7 +604,7 @@ export function ReservationConfirmationPreview({ data }: ReservationConfirmation
           </Heading>
           <div className={styles.outline}>
             <Box m='-1px'>
-              <table className={styles.table}>
+              <table className={`${styles.table} ${styles['no-repeat-header']}`}>
                 <colgroup>
                   <col width='90px' />
                   <col width='100px' />
@@ -728,7 +728,7 @@ export function ReservationConfirmationPreview({ data }: ReservationConfirmation
           </Heading>
           <div className={styles.outline}>
             <Box m='-1px'>
-              <table className={styles.table}>
+              <table className={`${styles.table} ${styles['no-repeat-header']}`}>
                 <colgroup>
                   <col width='100px' />
                   <col width='200px' />

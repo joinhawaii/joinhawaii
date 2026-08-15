@@ -63,4 +63,8 @@
     page-break-after: avoid;
     break-after: avoid-page;
   }
+
+  .table.no-repeat-header thead {
+    display: table-row-group;
+  }
 }
