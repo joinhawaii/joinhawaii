@@ -119,5 +119,5 @@ export function buildVoucherPrintFileName({
   const productLabel = toPrintableFileNamePart(productName, productFallback);
   const datePart = toPrintableDate(date);
 
-  return `${datePart}_${representativeName}_${productLabel}`;
+  return `${datePart}_${representativeName}님_${productLabel}`;
 }
