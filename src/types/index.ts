@@ -51,6 +51,7 @@ export type AllProducts = {
   event_date: string;
   booking_platform: string;
   main_client_name: string;
+  clients: string[];
   product_name: string;
   type: ProductType;
   total_cost_krw: number;
@@ -255,6 +256,7 @@ export type ProductWithReservation<T> = T & {
   reservations: {
     main_client_name: string;
     booking_platform: string;
+    clients: { korean_name: string }[];
   };
 };
 

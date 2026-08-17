@@ -31,28 +31,32 @@ export async function GET(request: Request) {
           *,
           reservations!hotels_reservation_id_fkey (
             main_client_name,
-            booking_platform
+            booking_platform,
+            clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
       supabase.from('tours').select<string, TourRow>(`
           *,
           reservations!tours_reservation_id_fkey (
             main_client_name,
-            booking_platform
+            booking_platform,
+            clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
       supabase.from('rental_cars').select<string, RentalCarRow>(`
           *,
           reservations!rental_cars_reservation_id_fkey (
             main_client_name,
-            booking_platform
+            booking_platform,
+            clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
       supabase.from('insurances').select<string, InsuranceRow>(`
           *,
           reservations!insurances_reservation_id_fkey (
             main_client_name,
-            booking_platform
+            booking_platform,
+            clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
       supabase.from('reservations').select('id, deposit, total_amount')
@@ -91,11 +95,12 @@ export async function GET(request: Request) {
 
     const allProducts = [
       ...(hotels.data?.map(
-        ({ reservations: { main_client_name, booking_platform }, ...hotel }) => ({
+        ({ reservations: { main_client_name, booking_platform, clients }, ...hotel }) => ({
           ...hotel,
           event_date: hotel.check_in_date,
           main_client_name,
           booking_platform,
+          clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
           product_name: [hotel.region, hotel.hotel_name, hotel.room_type, hotel.bed_type]
             .filter(Boolean)
             .join(' / '),
@@ -128,45 +133,50 @@ export async function GET(request: Request) {
             )
         })
       ) ?? []),
-      ...(tours.data?.map(({ reservations: { main_client_name, booking_platform }, ...tour }) => ({
-        ...tour,
-        event_date: tour.start_date,
-        main_client_name,
-        booking_platform,
-        product_name: [tour.region, tour.name].filter(Boolean).join(' / '),
-        type: 'tour' as const,
-        additional_options: optionsByKey.get(`tour_${String(tour.id)}`) ?? [],
-        total_amount:
-          tour.total_amount +
-          (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
-            (acc, optionProduct) => acc + optionProduct.total_amount,
-            0
-          ),
-        total_cost:
-          tour.total_cost +
-          (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
-            (acc, optionProduct) => acc + optionProduct.total_cost,
-            0
-          ),
-        total_cost_krw:
-          tour.total_cost * tour.exchange_rate +
-          (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
-            (acc, optionProduct) => acc + optionProduct.total_cost * optionProduct.exchange_rate,
-            0
-          ),
-        total_amount_krw:
-          Number(tour.total_amount ?? 0) * Number(tour.exchange_rate ?? 0) +
-          (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
-            (acc, optionProduct) => acc + optionProduct.total_amount * optionProduct.exchange_rate,
-            0
-          )
-      })) ?? []),
+      ...(tours.data?.map(
+        ({ reservations: { main_client_name, booking_platform, clients }, ...tour }) => ({
+          ...tour,
+          event_date: tour.start_date,
+          main_client_name,
+          booking_platform,
+          clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
+          product_name: [tour.region, tour.name].filter(Boolean).join(' / '),
+          type: 'tour' as const,
+          additional_options: optionsByKey.get(`tour_${String(tour.id)}`) ?? [],
+          total_amount:
+            tour.total_amount +
+            (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
+              (acc, optionProduct) => acc + optionProduct.total_amount,
+              0
+            ),
+          total_cost:
+            tour.total_cost +
+            (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
+              (acc, optionProduct) => acc + optionProduct.total_cost,
+              0
+            ),
+          total_cost_krw:
+            tour.total_cost * tour.exchange_rate +
+            (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
+              (acc, optionProduct) => acc + optionProduct.total_cost * optionProduct.exchange_rate,
+              0
+            ),
+          total_amount_krw:
+            Number(tour.total_amount ?? 0) * Number(tour.exchange_rate ?? 0) +
+            (optionsByKey.get(`tour_${String(tour.id)}`) ?? []).reduce(
+              (acc, optionProduct) =>
+                acc + optionProduct.total_amount * optionProduct.exchange_rate,
+              0
+            )
+        })
+      ) ?? []),
       ...(rental_cars.data?.map(
-        ({ reservations: { main_client_name, booking_platform }, ...rentalCar }) => ({
+        ({ reservations: { main_client_name, booking_platform, clients }, ...rentalCar }) => ({
           ...rentalCar,
           event_date: rentalCar.pickup_date,
           main_client_name,
           booking_platform,
+          clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
           product_name: [rentalCar.region, rentalCar.model].filter(Boolean).join(' / '),
           type: 'rental_car' as const,
           additional_options: optionsByKey.get(`rental_car_${String(rentalCar.id)}`) ?? [],
@@ -198,11 +208,12 @@ export async function GET(request: Request) {
         })
       ) ?? []),
       ...(insurances.data?.map(
-        ({ reservations: { main_client_name, booking_platform }, ...insurance }) => ({
+        ({ reservations: { main_client_name, booking_platform, clients }, ...insurance }) => ({
           ...insurance,
           event_date: insurance.start_date,
           main_client_name,
           booking_platform,
+          clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
           product_name: `${insurance.company}`,
           type: 'insurance' as const,
           additional_options: optionsByKey.get(`insurance_${String(insurance.id)}`) ?? [],
@@ -282,11 +293,13 @@ export async function GET(request: Request) {
       );
     }
 
-    // Client name filter (partial match)
+    // Client name filter (partial match against main client or any client on the reservation)
     if (clientName) {
       const searchTerm = clientName.toLowerCase();
-      filteredProducts = filteredProducts.filter(product =>
-        product.main_client_name.toLowerCase().includes(searchTerm)
+      filteredProducts = filteredProducts.filter(
+        product =>
+          product.main_client_name.toLowerCase().includes(searchTerm) ||
+          product.clients.some(name => name.toLowerCase().includes(searchTerm))
       );
     }
 
