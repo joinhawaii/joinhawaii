@@ -1,12 +1,26 @@
 import { PER_PAGE } from '@/constants';
 import { createClient } from '@/lib/supabase/server';
-import type { AdditionalOptions, ProductWithReservation, ProductsType, TablesRow } from '@/types';
+import type {
+  AdditionalOptions,
+  ProductsType,
+  ProductType,
+  ProductWithReservation,
+  TablesRow
+} from '@/types';
 import { NextResponse } from 'next/server';
 
 type HotelRow = ProductWithReservation<TablesRow<'hotels'>>;
 type TourRow = ProductWithReservation<TablesRow<'tours'>>;
 type RentalCarRow = ProductWithReservation<TablesRow<'rental_cars'>>;
 type InsuranceRow = ProductWithReservation<TablesRow<'insurances'>>;
+
+const PRODUCT_TYPE_BY_TABLE: Record<ProductsType, ProductType> = {
+  flights: 'flight',
+  hotels: 'hotel',
+  tours: 'tour',
+  rental_cars: 'rental_car',
+  insurances: 'insurance'
+};
 
 export async function GET(request: Request) {
   try {
@@ -400,12 +414,33 @@ export async function DELETE(request: Request) {
       throw new Error('삭제된 항목의 예약 정보를 찾을 수 없습니다.');
     }
 
-    const { error: totalError } = await supabase.rpc('calculate_reservation_total', {
+    const productType = PRODUCT_TYPE_BY_TABLE[body.table];
+
+    const { error: optionsDeleteError } = await supabase
+      .from('options')
+      .delete()
+      .eq('pid', body.id)
+      .eq('type', productType);
+
+    if (optionsDeleteError) {
+      throw optionsDeleteError;
+    }
+
+    const { data: totals, error: totalError } = await supabase.rpc('calculate_reservation_total', {
       p_reservation_id: deletedRow.reservation_id
     });
 
     if (totalError) {
       throw totalError;
+    }
+
+    const { error: updateError } = await supabase
+      .from('reservations')
+      .update(totals ?? {})
+      .eq('reservation_id', deletedRow.reservation_id);
+
+    if (updateError) {
+      throw updateError;
     }
 
     return NextResponse.json({
