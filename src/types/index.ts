@@ -256,6 +256,7 @@ export type ProductWithReservation<T> = T & {
   reservations: {
     main_client_name: string;
     booking_platform: string;
+    is_confirmation_published: boolean;
     clients: { korean_name: string }[];
   };
 };

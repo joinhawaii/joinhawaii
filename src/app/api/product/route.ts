@@ -46,6 +46,7 @@ export async function GET(request: Request) {
           reservations!hotels_reservation_id_fkey (
             main_client_name,
             booking_platform,
+            is_confirmation_published,
             clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
@@ -54,6 +55,7 @@ export async function GET(request: Request) {
           reservations!tours_reservation_id_fkey (
             main_client_name,
             booking_platform,
+            is_confirmation_published,
             clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
@@ -62,6 +64,7 @@ export async function GET(request: Request) {
           reservations!rental_cars_reservation_id_fkey (
             main_client_name,
             booking_platform,
+            is_confirmation_published,
             clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
@@ -70,6 +73,7 @@ export async function GET(request: Request) {
           reservations!insurances_reservation_id_fkey (
             main_client_name,
             booking_platform,
+            is_confirmation_published,
             clients!clients_reservation_id_fkey ( korean_name )
           )
         `),
@@ -109,11 +113,15 @@ export async function GET(request: Request) {
 
     const allProducts = [
       ...(hotels.data?.map(
-        ({ reservations: { main_client_name, booking_platform, clients }, ...hotel }) => ({
+        ({
+          reservations: { main_client_name, booking_platform, is_confirmation_published, clients },
+          ...hotel
+        }) => ({
           ...hotel,
           event_date: hotel.check_in_date,
           main_client_name,
           booking_platform,
+          is_confirmation_published,
           clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
           product_name: [hotel.region, hotel.hotel_name, hotel.room_type, hotel.bed_type]
             .filter(Boolean)
@@ -148,11 +156,15 @@ export async function GET(request: Request) {
         })
       ) ?? []),
       ...(tours.data?.map(
-        ({ reservations: { main_client_name, booking_platform, clients }, ...tour }) => ({
+        ({
+          reservations: { main_client_name, booking_platform, is_confirmation_published, clients },
+          ...tour
+        }) => ({
           ...tour,
           event_date: tour.start_date,
           main_client_name,
           booking_platform,
+          is_confirmation_published,
           clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
           product_name: [tour.region, tour.name].filter(Boolean).join(' / '),
           type: 'tour' as const,
@@ -185,11 +197,15 @@ export async function GET(request: Request) {
         })
       ) ?? []),
       ...(rental_cars.data?.map(
-        ({ reservations: { main_client_name, booking_platform, clients }, ...rentalCar }) => ({
+        ({
+          reservations: { main_client_name, booking_platform, is_confirmation_published, clients },
+          ...rentalCar
+        }) => ({
           ...rentalCar,
           event_date: rentalCar.pickup_date,
           main_client_name,
           booking_platform,
+          is_confirmation_published,
           clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
           product_name: [rentalCar.region, rentalCar.model].filter(Boolean).join(' / '),
           type: 'rental_car' as const,
@@ -222,11 +238,15 @@ export async function GET(request: Request) {
         })
       ) ?? []),
       ...(insurances.data?.map(
-        ({ reservations: { main_client_name, booking_platform, clients }, ...insurance }) => ({
+        ({
+          reservations: { main_client_name, booking_platform, is_confirmation_published, clients },
+          ...insurance
+        }) => ({
           ...insurance,
           event_date: insurance.start_date,
           main_client_name,
           booking_platform,
+          is_confirmation_published,
           clients: (clients ?? []).map(({ korean_name }) => korean_name).filter(Boolean),
           product_name: `${insurance.company}`,
           type: 'insurance' as const,
@@ -261,7 +281,7 @@ export async function GET(request: Request) {
     ];
 
     // Apply filters
-    let filteredProducts = allProducts;
+    let filteredProducts = allProducts.filter(product => product.is_confirmation_published);
 
     // Date range filter (빈 문자열 무시)
     const hasStartDate = !!startDate && startDate !== '';
