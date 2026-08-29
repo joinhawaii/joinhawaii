@@ -88,6 +88,14 @@
   text-overflow: ellipsis;
 }
 
+.monthEventLine {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff;
+}
+
 .timeLabel {
   color: #fff;
 }

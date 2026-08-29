@@ -198,6 +198,15 @@ function CustomEvent({ event }: { event: CalendarEvent }) {
   );
 }
 
+function MonthEvent({ event }: { event: CalendarEvent }) {
+  const label = `${event.resource.productName} · ${event.resource.clientLabel}`;
+  return (
+    <span className={styles.monthEventLine} title={label}>
+      {label}
+    </span>
+  );
+}
+
 export default function CalendarClientContainer() {
   const router = useRouter();
   const { data: reservations } = useSuspenseQuery(calendarQueryOptions());
@@ -239,7 +248,7 @@ export default function CalendarClientContainer() {
             endAccessor={e => e.end}
             eventPropGetter={eventPropGetter}
             onSelectEvent={handleSelectEvent}
-            components={{ event: CustomEvent }}
+            components={{ event: CustomEvent, month: { event: MonthEvent } }}
             style={{ height: 'calc(100vh - 240px)' }}
             popup
           />
