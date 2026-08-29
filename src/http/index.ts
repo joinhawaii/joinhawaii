@@ -209,19 +209,22 @@ export const deleteReservation = async (reservation_id: string) => {
   return result;
 };
 
-export const publishReservationConfirmation = async (reservation_id: string) => {
+export const publishReservationConfirmation = async (
+  reservation_id: string,
+  is_confirmation_published: boolean = true
+) => {
   const response = await fetch('/api/reservation/publish', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ reservation_id })
+    body: JSON.stringify({ reservation_id, is_confirmation_published })
   });
 
   const result = await response.json();
 
   if (!response.ok || !result.success) {
-    throw new Error(result.error || '예약확인서 발행에 실패했습니다.');
+    throw new Error(result.error || '예약확인서 발행 상태 변경에 실패했습니다.');
   }
 
   return result;
