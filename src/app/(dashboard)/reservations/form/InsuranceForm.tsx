@@ -81,10 +81,13 @@ export default function InsuranceForm({
   });
 
   useEffect(() => {
-    reset({
-      reservation_id,
-      insurances: data.products.insurances
-    });
+    reset(
+      {
+        reservation_id,
+        insurances: data.products.insurances
+      },
+      { keepDirtyValues: true }
+    );
   }, [data.products.insurances, reservation_id, reset]);
 
   const insurances = useWatch({ control, name: 'insurances' }) ?? [defaultInsuranceValues];

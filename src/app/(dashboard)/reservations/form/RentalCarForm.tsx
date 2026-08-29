@@ -83,10 +83,13 @@ export default function RentalCarForm({
   });
 
   useEffect(() => {
-    reset({
-      reservation_id,
-      rental_cars: data.products.rental_cars
-    });
+    reset(
+      {
+        reservation_id,
+        rental_cars: data.products.rental_cars
+      },
+      { keepDirtyValues: true }
+    );
   }, [data.products.rental_cars, reservation_id, reset]);
 
   const rentalCars = useWatch({ control, name: 'rental_cars' }) ?? [defaultCarValues];

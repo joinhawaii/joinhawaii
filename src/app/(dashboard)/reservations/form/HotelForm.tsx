@@ -79,10 +79,13 @@ export default function HotelForm({ data, mutation, handleAdditionalOptions }: P
   });
 
   useEffect(() => {
-    reset({
-      reservation_id,
-      hotels: data.products.hotels
-    });
+    reset(
+      {
+        reservation_id,
+        hotels: data.products.hotels
+      },
+      { keepDirtyValues: true }
+    );
   }, [data.products.hotels, reservation_id, reset]);
 
   const hotels = useWatch({ control, name: 'hotels' }) ?? [defaultHotelValues];

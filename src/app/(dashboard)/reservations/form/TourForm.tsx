@@ -71,10 +71,13 @@ export default function TourForm({ data, mutation, handleAdditionalOptions }: Pr
   });
 
   useEffect(() => {
-    reset({
-      reservation_id,
-      tours: data.products.tours
-    });
+    reset(
+      {
+        reservation_id,
+        tours: data.products.tours
+      },
+      { keepDirtyValues: true }
+    );
   }, [data.products.tours, reservation_id, reset]);
 
   const tours = useWatch({ control, name: 'tours' }) ?? [defaultTourValues];

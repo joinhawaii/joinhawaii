@@ -63,10 +63,13 @@ export default function FlightForm({ data, mutation }: ProductFormProps) {
   });
 
   useEffect(() => {
-    reset({
-      reservation_id,
-      flights: data.products.flights
-    });
+    reset(
+      {
+        reservation_id,
+        flights: data.products.flights
+      },
+      { keepDirtyValues: true }
+    );
   }, [data.products.flights, reservation_id, reset]);
 
   const flights = useWatch({ control, name: 'flights' }) ?? [defaultFlightValues];
