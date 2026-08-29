@@ -7,7 +7,8 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { format, getDay, parse, startOfWeek } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+import { useState } from 'react';
+import { Calendar, dateFnsLocalizer, type View } from 'react-big-calendar';
 import styles from './calendar.module.css';
 
 const locales = { ko };
@@ -212,6 +213,9 @@ export default function CalendarClientContainer() {
   const { data: reservations } = useSuspenseQuery(calendarQueryOptions());
   const events = toCalendarEvents(reservations);
 
+  const [date, setDate] = useState(new Date());
+  const [view, setView] = useState<View>('month');
+
   const eventPropGetter = (event: CalendarEvent) => ({
     style: { backgroundColor: TYPE_CONFIG[event.resource.type].color, border: 'none' }
   });
@@ -250,6 +254,10 @@ export default function CalendarClientContainer() {
             onSelectEvent={handleSelectEvent}
             components={{ event: CustomEvent, month: { event: MonthEvent } }}
             style={{ height: 'calc(100vh - 240px)' }}
+            date={date}
+            view={view}
+            onNavigate={setDate}
+            onView={setView}
             popup
           />
         </div>
