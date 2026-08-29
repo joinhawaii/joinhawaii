@@ -22,12 +22,13 @@ import {
   Button,
   Flex,
   Heading,
+  Switch,
   Table,
   Text,
   TextField
 } from '@radix-ui/themes';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { FileText, Send } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { useRouter } from 'nextjs-toploader/app';
 import { useEffect, useState } from 'react';
 import { Controller, type SubmitHandler, useForm, useWatch } from 'react-hook-form';
@@ -71,9 +72,10 @@ export default function ReservationsFormClientContainer({
   const isConfirmationPublished = !!data?.is_confirmation_published;
 
   const publishMutation = useMutation({
-    mutationFn: () => publishReservationConfirmation(data!.reservation_id!),
-    onSuccess: () => {
-      toast.success('예약확인서가 발행되었습니다.');
+    mutationFn: (isPublished: boolean) =>
+      publishReservationConfirmation(data!.reservation_id!, isPublished),
+    onSuccess: (result: { message: string }) => {
+      handleApiSuccess(result);
       refetch();
     },
     onError: handleApiError
@@ -467,17 +469,17 @@ export default function ReservationsFormClientContainer({
                             <FileText />
                             예약확인서
                           </Button>
-                          <Button
-                            variant='outline'
-                            size='3'
-                            type='button'
-                            loading={publishMutation.isPending}
-                            disabled={isConfirmationPublished}
-                            onClick={() => publishMutation.mutate()}
-                          >
-                            <Send />
-                            {isConfirmationPublished ? '발행완료' : '발행'}
-                          </Button>
+                          <Flex align='center' gap='2' asChild>
+                            <Text as='label' size='3'>
+                              <Switch
+                                size='2'
+                                checked={isConfirmationPublished}
+                                disabled={publishMutation.isPending}
+                                onCheckedChange={checked => publishMutation.mutate(checked)}
+                              />
+                              발행여부
+                            </Text>
+                          </Flex>
                         </Flex>
                       </Table.Cell>
                     </Table.Row>
